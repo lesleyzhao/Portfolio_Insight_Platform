@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.portfolio import router as portfolio_router
+from app.api.data_ingestion import router as data_ingestion_router
+from app.api.real_time_prices import router as real_time_prices_router
 from app.core.config import settings
 
 app = FastAPI(
@@ -20,6 +22,8 @@ app.add_middleware(
 
 # Include routers
 app.include_router(portfolio_router, prefix="/api/v1")
+app.include_router(data_ingestion_router, prefix="/api/v1")
+app.include_router(real_time_prices_router, prefix="/api/v1")
 
 
 @app.get("/")
