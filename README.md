@@ -90,10 +90,10 @@ Portfolio_Insight_Platform/
 │   └── main.py                       # FastAPI application entry point
 ├── alembic/                          # Database migrations
 ├── tests/                            # Test files
-│   └── test_portfolio.py             # Portfolio API tests
-├── test_all_functionalities.py       # Comprehensive test suite
-├── test_data_scraping.py             # Data scraping tests
-├── test_real_time_prices.py          # Real-time price tests
+│   ├── test_portfolio.py             # Portfolio API tests
+│   ├── test_all_functionalities.py   # Comprehensive test suite
+│   ├── test_data_scraping.py         # Data scraping tests
+│   └── test_real_time_prices.py      # Real-time price tests
 ├── REAL_TIME_PRICES_GUIDE.md         # Architecture documentation
 ├── requirements.txt                  # Python dependencies
 ├── alembic.ini                       # Alembic configuration
