@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import and_
 from typing import List, Optional
-from uuid import UUID
 from app.models.models import Portfolio, HoldingCurrent, Ticker
 from app.schemas.schemas import PortfolioCreate, PortfolioUpdate, HoldingCreate, HoldingUpdate
 
@@ -17,15 +16,15 @@ class PortfolioService:
         self.db.refresh(db_portfolio)
         return db_portfolio
 
-    def get_portfolios(self, user_id: UUID) -> List[Portfolio]:
+    def get_portfolios(self, user_id: str) -> List[Portfolio]:
         return self.db.query(Portfolio).filter(Portfolio.created_by == user_id).all()
 
-    def get_portfolio(self, portfolio_id: UUID, user_id: UUID) -> Optional[Portfolio]:
+    def get_portfolio(self, portfolio_id: str, user_id: str) -> Optional[Portfolio]:
         return self.db.query(Portfolio).filter(
             and_(Portfolio.portfolio_id == portfolio_id, Portfolio.created_by == user_id)
         ).first()
 
-    def update_portfolio(self, portfolio_id: UUID, user_id: UUID, portfolio_update: PortfolioUpdate) -> Optional[Portfolio]:
+    def update_portfolio(self, portfolio_id: str, user_id: str, portfolio_update: PortfolioUpdate) -> Optional[Portfolio]:
         db_portfolio = self.get_portfolio(portfolio_id, user_id)
         if not db_portfolio:
             return None
@@ -38,7 +37,7 @@ class PortfolioService:
         self.db.refresh(db_portfolio)
         return db_portfolio
 
-    def delete_portfolio(self, portfolio_id: UUID, user_id: UUID) -> bool:
+    def delete_portfolio(self, portfolio_id: str, user_id: str) -> bool:
         db_portfolio = self.get_portfolio(portfolio_id, user_id)
         if not db_portfolio:
             return False
@@ -47,7 +46,7 @@ class PortfolioService:
         self.db.commit()
         return True
 
-    def get_portfolio_stocks(self, portfolio_id: UUID, user_id: UUID) -> List[HoldingCurrent]:
+    def get_portfolio_stocks(self, portfolio_id: str, user_id: str) -> List[HoldingCurrent]:
         # First verify the portfolio belongs to the user
         portfolio = self.get_portfolio(portfolio_id, user_id)
         if not portfolio:
@@ -57,7 +56,7 @@ class PortfolioService:
             HoldingCurrent.portfolio_id == portfolio_id
         ).all()
 
-    def add_stock_to_portfolio(self, portfolio_id: UUID, user_id: UUID, holding: HoldingCreate) -> Optional[HoldingCurrent]:
+    def add_stock_to_portfolio(self, portfolio_id: str, user_id: str, holding: HoldingCreate) -> Optional[HoldingCurrent]:
         # First verify the portfolio belongs to the user
         portfolio = self.get_portfolio(portfolio_id, user_id)
         if not portfolio:
@@ -94,7 +93,7 @@ class PortfolioService:
             self.db.refresh(db_holding)
             return db_holding
 
-    def update_stock_in_portfolio(self, portfolio_id: UUID, user_id: UUID, holding_id: UUID, holding_update: HoldingUpdate) -> Optional[HoldingCurrent]:
+    def update_stock_in_portfolio(self, portfolio_id: str, user_id: str, holding_id: str, holding_update: HoldingUpdate) -> Optional[HoldingCurrent]:
         # First verify the portfolio belongs to the user
         portfolio = self.get_portfolio(portfolio_id, user_id)
         if not portfolio:
@@ -118,7 +117,7 @@ class PortfolioService:
         self.db.refresh(db_holding)
         return db_holding
 
-    def remove_stock_from_portfolio(self, portfolio_id: UUID, user_id: UUID, holding_id: UUID) -> bool:
+    def remove_stock_from_portfolio(self, portfolio_id: str, user_id: str, holding_id: str) -> bool:
         # First verify the portfolio belongs to the user
         portfolio = self.get_portfolio(portfolio_id, user_id)
         if not portfolio:

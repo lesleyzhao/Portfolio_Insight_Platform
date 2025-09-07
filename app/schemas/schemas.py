@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import datetime
-from uuid import UUID
 from decimal import Decimal
 
 
@@ -15,7 +14,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    user_id: UUID
+    user_id: str
     created_timestamp: datetime
     updated_timestamp: datetime
 
@@ -36,7 +35,7 @@ class TickerCreate(TickerBase):
 
 
 class Ticker(TickerBase):
-    ticker_id: UUID
+    ticker_id: str
     created_timestamp: datetime
     updated_timestamp: datetime
 
@@ -51,7 +50,7 @@ class PortfolioBase(BaseModel):
 
 
 class PortfolioCreate(PortfolioBase):
-    created_by: UUID
+    created_by: str
 
 
 class PortfolioUpdate(BaseModel):
@@ -60,8 +59,8 @@ class PortfolioUpdate(BaseModel):
 
 
 class Portfolio(PortfolioBase):
-    portfolio_id: UUID
-    created_by: UUID
+    portfolio_id: str
+    created_by: str
     created_timestamp: datetime
     updated_timestamp: datetime
     holdings: List["HoldingCurrent"] = []
@@ -78,7 +77,7 @@ class HoldingBase(BaseModel):
 
 
 class HoldingCreate(HoldingBase):
-    ticker_id: UUID
+    ticker_id: str
 
 
 class HoldingUpdate(BaseModel):
@@ -88,9 +87,9 @@ class HoldingUpdate(BaseModel):
 
 
 class HoldingCurrent(HoldingBase):
-    holding_id: UUID
-    portfolio_id: UUID
-    ticker_id: UUID
+    holding_id: str
+    portfolio_id: str
+    ticker_id: str
     updated_timestamp: datetime
     ticker: Optional[Ticker] = None
 
@@ -105,11 +104,11 @@ class PriceDailyBase(BaseModel):
 
 
 class PriceDailyCreate(PriceDailyBase):
-    ticker_id: UUID
+    ticker_id: str
 
 
 class PriceDaily(PriceDailyBase):
-    ticker_id: UUID
+    ticker_id: str
 
     class Config:
         from_attributes = True

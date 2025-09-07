@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-from uuid import UUID
 from app.db.database import get_db
 from app.schemas.schemas import Portfolio, PortfolioCreate, PortfolioUpdate, HoldingCurrent, HoldingCreate, HoldingUpdate
 from app.services.portfolio_service import PortfolioService
@@ -21,7 +20,7 @@ def create_portfolio(
 
 @router.get("/", response_model=List[Portfolio])
 def get_portfolios(
-    user_id: UUID,
+    user_id: str,
     db: Session = Depends(get_db)
 ):
     """Get all portfolios for a user"""
@@ -32,8 +31,8 @@ def get_portfolios(
 
 @router.get("/{portfolio_id}", response_model=Portfolio)
 def get_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
+    portfolio_id: str,
+    user_id: str,
     db: Session = Depends(get_db)
 ):
     """Get a specific portfolio by ID"""
@@ -49,8 +48,8 @@ def get_portfolio(
 
 @router.put("/{portfolio_id}", response_model=Portfolio)
 def update_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
+    portfolio_id: str,
+    user_id: str,
     portfolio_update: PortfolioUpdate,
     db: Session = Depends(get_db)
 ):
@@ -67,8 +66,8 @@ def update_portfolio(
 
 @router.delete("/{portfolio_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
+    portfolio_id: str,
+    user_id: str,
     db: Session = Depends(get_db)
 ):
     """Delete a portfolio"""
@@ -83,8 +82,8 @@ def delete_portfolio(
 
 @router.get("/{portfolio_id}/stocks", response_model=List[HoldingCurrent])
 def get_portfolio_stocks(
-    portfolio_id: UUID,
-    user_id: UUID,
+    portfolio_id: str,
+    user_id: str,
     db: Session = Depends(get_db)
 ):
     """Get all stocks in a portfolio"""
@@ -100,8 +99,8 @@ def get_portfolio_stocks(
 
 @router.post("/{portfolio_id}/stocks", response_model=HoldingCurrent, status_code=status.HTTP_201_CREATED)
 def add_stock_to_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
+    portfolio_id: str,
+    user_id: str,
     holding: HoldingCreate,
     db: Session = Depends(get_db)
 ):
@@ -118,9 +117,9 @@ def add_stock_to_portfolio(
 
 @router.patch("/{portfolio_id}/stocks/{holding_id}", response_model=HoldingCurrent)
 def update_stock_in_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
-    holding_id: UUID,
+    portfolio_id: str,
+    user_id: str,
+    holding_id: str,
     holding_update: HoldingUpdate,
     db: Session = Depends(get_db)
 ):
@@ -137,9 +136,9 @@ def update_stock_in_portfolio(
 
 @router.delete("/{portfolio_id}/stocks/{holding_id}", status_code=status.HTTP_204_NO_CONTENT)
 def remove_stock_from_portfolio(
-    portfolio_id: UUID,
-    user_id: UUID,
-    holding_id: UUID,
+    portfolio_id: str,
+    user_id: str,
+    holding_id: str,
     db: Session = Depends(get_db)
 ):
     """Remove a stock from a portfolio"""

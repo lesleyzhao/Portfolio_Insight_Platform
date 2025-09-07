@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from app.main import app
 from app.db.database import get_db, Base
 from app.models.models import User, Ticker
+import uuid
 
 # Test database URL (use in-memory SQLite for testing)
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -42,7 +43,7 @@ def setup_database():
     db.commit()
     db.refresh(test_ticker)
     
-    yield {"user_id": test_user.user_id, "ticker_id": test_ticker.ticker_id}
+    yield {"user_id": str(test_user.user_id), "ticker_id": str(test_ticker.ticker_id)}
     
     # Clean up
     db.close()
@@ -111,8 +112,8 @@ def test_add_stock_to_portfolio(setup_database):
     assert response.status_code == 201
     
     data = response.json()
-    assert data["quantity"] == 10.0
-    assert data["market_value"] == 1500.0
+    assert float(data["quantity"]) == 10.0
+    assert float(data["market_value"]) == 1500.0
 
 
 def test_health_check():
