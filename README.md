@@ -236,19 +236,26 @@ WebSocket ←─── Client Dashboard
 
 ### Run All Tests
 ```bash
-python test_all_functionalities.py
+# Run comprehensive test suite
+python tests/test_all_functionalities.py
+
+# Or run all tests with pytest
+pytest tests/ -v
 ```
 
 ### Run Specific Test Suites
 ```bash
 # Portfolio API tests
-pytest tests/test_portfolio.py
+pytest tests/test_portfolio.py -v
 
 # Data scraping tests
-python test_data_scraping.py
+pytest tests/test_data_scraping.py -v
 
 # Real-time price tests
-python test_real_time_prices.py
+pytest tests/test_real_time_prices.py -v
+
+# Comprehensive functionality test
+python tests/test_all_functionalities.py
 ```
 
 ### Test Coverage
