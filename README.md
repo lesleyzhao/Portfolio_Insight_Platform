@@ -109,6 +109,7 @@ Portfolio_Insight_Platform/
 │   └── test_real_time_prices.py      # Real-time price tests
 ├── docs/                             # Documentation (future)
 ├── DESIGN_DOC.md                     # Master design specification
+├── DESIGN_DIAGRAM.pdf                # System architecture diagram
 ├── DATABASE_DESIGN.md                # Database design principles & ERD
 ├── REAL_TIME_PRICES_GUIDE.md         # Real-time architecture documentation
 ├── requirements.txt                  # Python dependencies
