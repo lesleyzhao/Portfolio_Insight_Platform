@@ -67,7 +67,7 @@ A comprehensive FastAPI-based platform for portfolio management and investment r
 ## 📁 Project Structure
 
 ```
-portfolio-insight-platform/
+Portfolio_Insight_Platform/
 ├── app/
 │   ├── api/                          # API endpoints
 │   │   ├── portfolio.py              # Portfolio CRUD endpoints
@@ -113,8 +113,8 @@ portfolio-insight-platform/
 
 1. **Clone the repository:**
 ```bash
-git clone https://github.com/lesleyzhao/portfolio-insight-platform.git
-cd portfolio-insight-platform
+git clone https://github.com/lesleyzhao/Portfolio_Insight_Platform.git
+cd Portfolio_Insight_Platform
 ```
 
 2. **Create and activate virtual environment:**
