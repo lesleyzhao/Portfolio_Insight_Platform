@@ -269,16 +269,16 @@ erDiagram
     
     %% One-to-Many Relationships
     USERS ||--o{ PORTFOLIOS : "creates"
-    USERS.user_id ||--o{ PORTFOLIOS.created_by : "One user can have many portfolios"
+    USERS ||--o{ PORTFOLIOS : "user_id to created_by"
     
     PORTFOLIOS ||--o{ HOLDINGS_CURRENT : "contains"
-    PORTFOLIOS.portfolio_id ||--o{ HOLDINGS_CURRENT.portfolio_id : "One portfolio can have many holdings"
+    PORTFOLIOS ||--o{ HOLDINGS_CURRENT : "portfolio_id to portfolio_id"
     
     TICKERS ||--o{ HOLDINGS_CURRENT : "held_in"
-    TICKERS.ticker_id ||--o{ HOLDINGS_CURRENT.ticker_id : "One ticker can be held in many portfolios"
+    TICKERS ||--o{ HOLDINGS_CURRENT : "ticker_id to ticker_id"
     
     TICKERS ||--o{ PRICES_DAILY : "has_prices"
-    TICKERS.ticker_id ||--o{ PRICES_DAILY.ticker_id : "One ticker can have many daily prices"
+    TICKERS ||--o{ PRICES_DAILY : "ticker_id to ticker_id"
 ```
 
 ### Relationship Types and Keys
