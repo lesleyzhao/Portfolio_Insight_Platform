@@ -576,219 +576,45 @@ This design is used by every major financial platform (Bloomberg, Yahoo Finance,
 
 ---
 
-## Why We Separate Tables (Technical Details)
+## Why We Separate Tables
 
-### The Problem: Single Table with JSON/Arrays
+### The Problem with Single Table + JSON
 
-#### ❌ Bad Design: Everything in One Table
-
+Instead of storing everything in one table with JSON:
 ```sql
--- DON'T DO THIS
+-- ❌ BAD: Everything in one table
 CREATE TABLE portfolios (
   portfolio_id UUID PRIMARY KEY,
   name VARCHAR(128),
-  base_currency VARCHAR(8),
-  created_by UUID,
   holdings JSON  -- {"AAPL": 50, "MSFT": 100, "TSLA": 25}
-  -- OR
-  stock_symbols TEXT[],  -- ['AAPL', 'MSFT', 'TSLA']
-  quantities INT[]       -- [50, 100, 25]
 );
 ```
 
-#### Problems with Single Table Approach
-
-1. **Query Nightmare**
-   ```sql
-   -- How do you find all portfolios holding AAPL?
-   SELECT * FROM portfolios WHERE holdings->>'AAPL' IS NOT NULL;
-   -- This is slow, complex, and hard to index!
-   ```
-
-2. **No Data Validation**
-   ```sql
-   -- JSON allows invalid data
-   INSERT INTO portfolios (holdings) 
-   VALUES ('{"AAPL": "fifty", "MSFT": -100}');  -- Invalid!
-   ```
-
-3. **Performance Issues**
-   ```sql
-   -- JSON queries are slow
-   SELECT * FROM portfolios 
-   WHERE JSON_EXTRACT(holdings, '$.AAPL') > 50;
-   -- No indexes, full table scan!
-   ```
-
-4. **Schema Explosion**
-   ```sql
-   -- You'd need columns for EVERY possible stock
-   CREATE TABLE portfolios (
-     portfolio_id UUID,
-     name VARCHAR(128),
-     aapl_shares INT,
-     msft_shares INT,
-     tsla_shares INT,
-     -- ... 10,000+ more columns!
-   );
-   ```
+**Problems:**
+- **Slow queries**: `SELECT * FROM portfolios WHERE holdings->>'AAPL' IS NOT NULL`
+- **No validation**: JSON allows invalid data like `{"AAPL": "fifty"}`
+- **Poor performance**: No indexes, full table scans
+- **Schema explosion**: Would need 10,000+ columns for all stocks
 
 ### The Solution: Normalized Tables
 
-#### ✅ Good Design: Separate Tables
+**✅ Good Design: Separate tables with relationships**
+- `portfolios` table: Portfolio metadata (1 row per portfolio)
+- `holdings_current` table: Holdings data (1 row per holding)
+- `tickers` table: Stock metadata (1 row per stock)
 
-```sql
--- Portfolio metadata (1 row per portfolio)
-CREATE TABLE portfolios (
-  portfolio_id UUID PRIMARY KEY,
-  name VARCHAR(128) NOT NULL,
-  base_currency VARCHAR(8) NOT NULL DEFAULT 'USD',
-  created_by UUID NOT NULL REFERENCES users(user_id),
-  created_timestamp TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
+### Key Benefits
 
--- Holdings data (1 row per holding)
-CREATE TABLE holdings_current (
-  holding_id UUID PRIMARY KEY,
-  portfolio_id UUID NOT NULL REFERENCES portfolios(portfolio_id) ON DELETE CASCADE,
-  ticker_id UUID NOT NULL REFERENCES tickers(ticker_id) ON DELETE RESTRICT,
-  quantity NUMERIC(24,8) NOT NULL DEFAULT 0,
-  market_value NUMERIC(24,8) NOT NULL DEFAULT 0,
-  weight_pct NUMERIC(8,4),
-  updated_timestamp TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT uq_hc_portfolio_ticker UNIQUE (portfolio_id, ticker_id)
-);
+1. **Fast Queries**: Indexed relationships enable efficient JOINs
+2. **Data Integrity**: Foreign key constraints prevent invalid data
+3. **Scalability**: Unlimited portfolios and holdings without schema changes
+4. **Maintainability**: Easy to add/update/delete individual holdings
 
--- Stock metadata (1 row per stock)
-CREATE TABLE tickers (
-  ticker_id UUID PRIMARY KEY,
-  symbol VARCHAR(16) UNIQUE NOT NULL,
-  company_name VARCHAR(256),
-  sector VARCHAR(128),
-  industry VARCHAR(128)
-);
-```
+### Database Normalization
 
-### Benefits of Normalized Design
-
-#### 1. **Query Flexibility**
-```sql
--- Find all portfolios holding AAPL
-SELECT p.name, h.quantity, h.market_value
-FROM portfolios p
-JOIN holdings_current h ON p.portfolio_id = h.portfolio_id
-JOIN tickers t ON h.ticker_id = t.ticker_id
-WHERE t.symbol = 'AAPL';
-
--- Get portfolio summary
-SELECT 
-    p.name,
-    COUNT(h.holding_id) as num_holdings,
-    SUM(h.market_value) as total_value
-FROM portfolios p
-LEFT JOIN holdings_current h ON p.portfolio_id = h.portfolio_id
-WHERE p.created_by = 'test-user-123'
-GROUP BY p.portfolio_id, p.name;
-```
-
-#### 2. **Data Integrity**
-```sql
--- Foreign key constraints ensure data consistency
-ticker_id REFERENCES tickers(ticker_id)  -- Must exist in tickers table
-portfolio_id REFERENCES portfolios(portfolio_id)  -- Must exist in portfolios table
-
--- Unique constraints prevent duplicates
-CONSTRAINT uq_hc_portfolio_ticker UNIQUE (portfolio_id, ticker_id)
-
--- Check constraints validate data
-quantity NUMERIC(24,8) NOT NULL DEFAULT 0  -- Must be a number
-```
-
-#### 3. **Performance**
-```sql
--- Indexed relationships for fast queries
-CREATE INDEX idx_holdings_portfolio_id ON holdings_current(portfolio_id);
-CREATE INDEX idx_holdings_ticker_id ON holdings_current(ticker_id);
-CREATE INDEX idx_tickers_symbol ON tickers(symbol);
-
--- Fast aggregation queries
-SELECT SUM(market_value) FROM holdings_current WHERE portfolio_id = '123';
-```
-
-#### 4. **Scalability**
-- ✅ **Unlimited portfolios per user**
-- ✅ **Unlimited holdings per portfolio**
-- ✅ **Any asset type** (stocks, ETFs, crypto, etc.)
-- ✅ **No schema changes** needed for new stocks
-
-#### 5. **Maintainability**
-```sql
--- Easy to add new holdings
-INSERT INTO holdings_current (portfolio_id, ticker_id, quantity, market_value)
-VALUES ('portfolio-123', 'new-stock-ticker', 100, 5000);
-
--- Easy to update holdings
-UPDATE holdings_current 
-SET quantity = 150, market_value = 7500
-WHERE portfolio_id = 'portfolio-123' AND ticker_id = 'AAPL';
-
--- Easy to remove holdings
-DELETE FROM holdings_current 
-WHERE portfolio_id = 'portfolio-123' AND ticker_id = 'TSLA';
-```
-
-### Database Normalization Principles
-
-#### First Normal Form (1NF)
-- Each column contains atomic values
-- No repeating groups or arrays
-
-#### Second Normal Form (2NF)
-- All non-key columns depend on the entire primary key
-- No partial dependencies
-
-#### Third Normal Form (3NF)
-- No transitive dependencies
+Follows **Third Normal Form (3NF)**:
 - Each table represents one "thing"
+- No repeating groups or arrays
+- All columns depend on the primary key
 
-### When JSON Might Be Acceptable
-
-There are rare cases where JSON might be okay:
-
-```sql
--- ✅ OK: Configuration data
-CREATE TABLE user_preferences (
-  user_id UUID,
-  preferences JSON  -- {"theme": "dark", "notifications": true}
-);
-
--- ✅ OK: Log data
-CREATE TABLE api_logs (
-  log_id UUID,
-  request_data JSON  -- {"headers": {...}, "body": {...}}
-);
-
--- ❌ BAD: Relational data
-CREATE TABLE portfolios (
-  portfolio_id UUID,
-  holdings JSON  -- This should be normalized!
-);
-```
-
-### Summary
-
-**The key principle:** When designing database schemas, avoid storing relational data as JSON lists or arrays. Instead, use separate normalized tables with foreign key relationships.
-
-**Benefits:**
-- ✅ **Fast queries** with proper indexes
-- ✅ **Data integrity** with constraints
-- ✅ **Easy maintenance** and updates
-- ✅ **Scalability** for unlimited data
-- ✅ **Standard SQL operations** work efficiently
-
-**Our portfolio schema follows this principle by separating:**
-- `portfolios` table (portfolio metadata)
-- `holdings_current` table (holdings data)
-- `tickers` table (stock metadata)
-
-This design is used by every major financial platform (Bloomberg, Yahoo Finance, etc.) because it's the industry standard for handling complex relational data efficiently.
+**Result**: Clean, efficient, industry-standard database design used by Bloomberg, Yahoo Finance, and other major financial platforms.
