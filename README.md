@@ -78,7 +78,7 @@ This comprehensive FastAPI-based platform transforms raw financial data into act
 
 ```
 Portfolio_Insight_Platform/
-├── app/
+├── app/                              # Main application code
 │   ├── api/                          # API endpoints
 │   │   ├── portfolio.py              # Portfolio CRUD endpoints
 │   │   ├── data_ingestion.py         # Data scraping endpoints
@@ -99,15 +99,22 @@ Portfolio_Insight_Platform/
 │   │   └── real_time_price_service.py # Real-time price management
 │   └── main.py                       # FastAPI application entry point
 ├── alembic/                          # Database migrations
+│   ├── versions/                     # Migration files
+│   ├── env.py                        # Alembic environment
+│   └── script.py.mako                # Migration template
 ├── tests/                            # Test files
 │   ├── test_portfolio.py             # Portfolio API tests
 │   ├── test_all_functionalities.py   # Comprehensive test suite
 │   ├── test_data_scraping.py         # Data scraping tests
 │   └── test_real_time_prices.py      # Real-time price tests
-├── REAL_TIME_PRICES_GUIDE.md         # Architecture documentation
+├── docs/                             # Documentation (future)
+├── DESIGN_DOC.md                     # Master design specification
+├── DATABASE_DESIGN.md                # Database design principles & ERD
+├── REAL_TIME_PRICES_GUIDE.md         # Real-time architecture documentation
 ├── requirements.txt                  # Python dependencies
 ├── alembic.ini                       # Alembic configuration
 ├── env.example                       # Environment variables template
+├── portfolio.db                      # SQLite database (local dev)
 └── README.md                         # This file
 ```
 
