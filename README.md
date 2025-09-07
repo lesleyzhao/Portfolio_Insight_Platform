@@ -1,6 +1,16 @@
 # Portfolio Insight & Research Platform
 
-A comprehensive FastAPI-based platform for portfolio management and investment research, featuring real-time price updates, data scraping, and advanced analytics. Built with industry-standard architecture for scalability and performance.
+The Portfolio Insight & Research Platform is designed to provide users with actionable insights into their investment portfolios by combining structured financial data with unstructured research materials. The system ingests and processes data from multiple sources—both internal and external—leveraging a Relational Database for structured portfolio data, a Vector Database for semantic search over unstructured text, and LLM-powered RAG pipelines for intelligent querying and insights.
+
+## 🎯 Platform Overview
+
+This comprehensive FastAPI-based platform transforms raw financial data into actionable investment intelligence through:
+
+- **Multi-Source Data Integration**: Capitol Hill trades, Yahoo Finance, research reports, and news articles
+- **Hybrid Data Architecture**: Relational database for structured data + Vector database for semantic search
+- **AI-Powered Insights**: LLM-driven RAG pipelines for intelligent querying and analysis
+- **Real-Time Processing**: Live price updates, WebSocket streaming, and automated data ingestion
+- **Scalable Architecture**: Industry-standard design for high-performance portfolio management
 
 ## 🚀 Features
 

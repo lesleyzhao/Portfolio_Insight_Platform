@@ -2,12 +2,19 @@
 
 ## What This System Does
 
-This is a **Portfolio Management System** that helps users track their investments. Think of it like a digital investment portfolio where you can:
+The **Portfolio Insight & Research Platform** is designed to provide users with actionable insights into their investment portfolios by combining structured financial data with unstructured research materials. The system ingests and processes data from multiple sources—both internal and external—leveraging a Relational Database for structured portfolio data, a Vector Database for semantic search over unstructured text, and LLM-powered RAG pipelines for intelligent querying and insights.
+
+### Core Capabilities
+
+This is a **Portfolio Management System** that helps users track their investments and gain intelligent insights. Think of it like a digital investment portfolio where you can:
 
 - **Create multiple portfolios** (e.g., "Retirement 401k", "Day Trading", "Crypto")
 - **Add different stocks/ETFs** to each portfolio (e.g., Apple, Microsoft, Tesla)
 - **Track quantities and values** of your holdings
 - **Store historical price data** for analysis
+- **Integrate research materials** for AI-powered insights
+- **Query unstructured data** using semantic search
+- **Get intelligent recommendations** through RAG pipelines
 
 ## Our Database Schema
 
