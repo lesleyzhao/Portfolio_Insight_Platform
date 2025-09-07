@@ -32,6 +32,14 @@ This comprehensive FastAPI-based platform transforms raw financial data into act
 - **Industry-Standard Architecture**: 5-minute real-time + 24-hour minute data
 - **Price History**: Comprehensive historical price tracking
 
+### Vector Database & RAG System
+- **Qdrant Integration**: High-performance vector database for semantic search
+- **SEC Edgar Downloads**: Automated S&P 500 financial report ingestion
+- **OpenAI Embeddings**: Advanced text embeddings for document similarity
+- **Semantic Search**: Natural language queries over financial documents
+- **Document Processing**: Automated extraction and cleaning of filing content
+- **RAG Pipeline**: Retrieval-Augmented Generation for intelligent insights
+
 ### Advanced Features
 - **WebSocket Streaming**: Live price updates for real-time dashboards
 - **RESTful API**: Clean, well-documented API endpoints
@@ -63,6 +71,12 @@ This comprehensive FastAPI-based platform transforms raw financial data into act
 - **Redis**: Real-time price caching and time-series data
 - **WebSockets**: Bidirectional real-time communication
 - **JSON**: Data serialization for real-time updates
+
+### Vector Database & AI
+- **Qdrant**: Vector database for semantic search and embeddings
+- **OpenAI**: Text embeddings and AI model integration
+- **SEC Edgar Downloader**: Automated financial report downloads
+- **LlamaIndex**: RAG framework for document processing (future)
 
 ### Testing & Development
 - **pytest**: Testing framework
@@ -112,6 +126,7 @@ Portfolio_Insight_Platform/
 ├── DESIGN_DIAGRAM.pdf                # System architecture diagram
 ├── DATABASE_DESIGN.md                # Database design principles & ERD
 ├── REAL_TIME_PRICES_GUIDE.md         # Real-time architecture documentation
+├── VECTOR_SYSTEM_GUIDE.md            # Vector database & RAG system guide
 ├── requirements.txt                  # Python dependencies
 ├── alembic.ini                       # Alembic configuration
 ├── env.example                       # Environment variables template
