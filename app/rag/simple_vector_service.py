@@ -53,10 +53,19 @@ class SimpleVectorService:
             collection_names = [col.name for col in collections.collections]
             
             if self.collection_name not in collection_names:
+                # Try to determine embedding dimension
+                try:
+                    # Test with a small text to get embedding dimension
+                    test_embedding = self._get_embedding("test")
+                    embedding_dim = len(test_embedding)
+                except:
+                    # Default to Hugging Face dimension if we can't determine
+                    embedding_dim = 384  # all-MiniLM-L6-v2 dimension
+                
                 self.client.create_collection(
                     collection_name=self.collection_name,
                     vectors_config=VectorParams(
-                        size=1536,  # OpenAI embedding dimension
+                        size=embedding_dim,
                         distance=Distance.COSINE
                     )
                 )
@@ -69,16 +78,32 @@ class SimpleVectorService:
             raise
     
     def _get_embedding(self, text: str) -> List[float]:
-        """Get embedding for text using OpenAI"""
+        """Get embedding for text using OpenAI with Hugging Face fallback"""
         try:
+            # Try OpenAI first
             response = self.openai_client.embeddings.create(
                 model="text-embedding-ada-002",
                 input=text
             )
             return response.data[0].embedding
         except Exception as e:
-            logger.error(f"Error getting embedding: {e}")
-            raise
+            logger.warning(f"OpenAI embedding failed: {e}")
+            logger.info("Falling back to Hugging Face embeddings...")
+            
+            # Fallback to Hugging Face
+            try:
+                from sentence_transformers import SentenceTransformer
+                if not hasattr(self, '_hf_model'):
+                    self._hf_model = SentenceTransformer('all-MiniLM-L6-v2')
+                
+                embedding = self._hf_model.encode(text)
+                return embedding.tolist()
+            except ImportError:
+                logger.error("sentence-transformers not installed. Install with: pip install sentence-transformers")
+                raise
+            except Exception as e:
+                logger.error(f"Hugging Face embedding failed: {e}")
+                raise
     
     def add_document(self, 
                     content: str, 
@@ -106,13 +131,13 @@ class SimpleVectorService:
             # Get embedding for the content
             embedding = self._get_embedding(content)
             
-            # Create point for Qdrant
+            # Create point for Qdrant (using 'text' for LlamaIndex compatibility)
             point = PointStruct(
                 id=str(uuid.uuid4()),
                 vector=embedding,
                 payload={
-                    'document_id': document_id,
-                    'content': content,
+                    'id': document_id,  # LlamaIndex expects 'id'
+                    'text': content,    # LlamaIndex expects 'text' instead of 'content'
                     'metadata': metadata,
                     'created_at': datetime.now().isoformat()
                 }

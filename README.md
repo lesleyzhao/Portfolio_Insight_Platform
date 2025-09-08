@@ -110,7 +110,16 @@ Portfolio_Insight_Platform/
 │   │   ├── portfolio_service.py      # Portfolio management logic
 │   │   ├── data_scraper.py           # Web scraping services
 │   │   ├── data_ingestion.py         # Data storage services
-│   │   └── real_time_price_service.py # Real-time price management
+│   │   ├── real_time_price_service.py # Real-time price management
+│   │   └── sec_edgar_service.py      # SEC Edgar download service
+│   ├── rag/                          # RAG & AI services
+│   │   ├── __init__.py               # RAG module initialization
+│   │   ├── README.md                 # RAG module documentation
+│   │   ├── simple_vector_service.py  # Vector database operations
+│   │   ├── simple_rag_service.py     # Basic RAG implementation
+│   │   ├── llamaindex_rag_service.py # Full LlamaIndex RAG
+│   │   ├── gpt4_rag_service.py       # OpenAI GPT-4 RAG
+│   │   └── hybrid_gpt4_rag_service.py # Cost-effective GPT-4 RAG
 │   └── main.py                       # FastAPI application entry point
 ├── alembic/                          # Database migrations
 │   ├── versions/                     # Migration files
