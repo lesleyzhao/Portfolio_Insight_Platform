@@ -120,7 +120,8 @@ Portfolio_Insight_Platform/
 │   ├── test_portfolio.py             # Portfolio API tests
 │   ├── test_all_functionalities.py   # Comprehensive test suite
 │   ├── test_data_scraping.py         # Data scraping tests
-│   └── test_real_time_prices.py      # Real-time price tests
+│   ├── test_real_time_prices.py      # Real-time price tests
+│   └── test_vector_system.py         # Vector database tests
 ├── docs/                             # Documentation (future)
 ├── DESIGN_DOC.md                     # Master design specification
 ├── DESIGN_DIAGRAM.pdf                # System architecture diagram
@@ -287,6 +288,9 @@ pytest tests/test_data_scraping.py -v
 # Real-time price tests
 pytest tests/test_real_time_prices.py -v
 
+# Vector database tests
+python tests/test_vector_system.py
+
 # Comprehensive functionality test
 python tests/test_all_functionalities.py
 ```
@@ -295,6 +299,7 @@ python tests/test_all_functionalities.py
 - ✅ **Portfolio CRUD** - All operations tested
 - ✅ **Data Scraping** - Capitol Hill Trades + Yahoo Finance
 - ✅ **Real-time Prices** - Redis integration + WebSocket
+- ✅ **Vector Database** - SEC Edgar download + Qdrant integration
 - ✅ **Portfolio Analytics** - Summary calculations
 - ✅ **Error Handling** - Graceful degradation
 

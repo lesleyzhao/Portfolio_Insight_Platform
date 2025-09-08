@@ -9,8 +9,8 @@ import sys
 import logging
 from pathlib import Path
 
-# Add the app directory to the Python path
-sys.path.append(str(Path(__file__).parent))
+# Add the project root to the Python path
+sys.path.append(str(Path(__file__).parent.parent))
 
 from app.services.sec_edgar_service import SECEdgarService
 from app.services.simple_vector_service import SimpleVectorService

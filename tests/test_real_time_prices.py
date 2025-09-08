@@ -3,8 +3,10 @@
 Test script for real-time price functionality
 """
 import sys
-import os
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+from pathlib import Path
+
+# Add the project root to the Python path
+sys.path.append(str(Path(__file__).parent.parent))
 
 from app.services.real_time_price_service import RealTimePriceService
 from app.db.database import SessionLocal

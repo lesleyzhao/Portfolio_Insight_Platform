@@ -33,7 +33,8 @@ class SECEdgarService:
         # Initialize the downloader
         self.downloader = Downloader(
             download_folder=self.download_dir,
-            user_agent="Portfolio Insight Platform (contact@example.com)"
+            company_name="Portfolio Insight Platform",
+            email_address="contact@example.com"
         )
         
         # S&P 500 tickers (subset for testing)
@@ -79,14 +80,14 @@ class SECEdgarService:
                     
                     # Download filings
                     self.downloader.get(
-                        ticker=ticker,
-                        filing=filing_type,
+                        ticker_or_cik=ticker,
+                        form=filing_type,
                         limit=limit,
                         download_details=True
                     )
                     
                     # Find downloaded files
-                    ticker_dir = self.download_dir / ticker
+                    ticker_dir = self.download_dir / "sec-edgar-filings" / ticker
                     if ticker_dir.exists():
                         filing_files = self._find_filing_files(ticker_dir, filing_type)
                         
@@ -176,10 +177,12 @@ class SECEdgarService:
         filing_files = []
         
         try:
-            # Look for filing files recursively
-            for file_path in ticker_dir.rglob(f"*{filing_type}*"):
-                if file_path.is_file() and file_path.suffix in ['.txt', '.html', '.htm']:
-                    filing_files.append(file_path)
+            # Look in the specific filing type directory
+            filing_type_dir = ticker_dir / filing_type
+            if filing_type_dir.exists():
+                for file_path in filing_type_dir.rglob("*"):
+                    if file_path.is_file() and file_path.suffix in ['.txt', '.html', '.htm']:
+                        filing_files.append(file_path)
             
             return filing_files
             

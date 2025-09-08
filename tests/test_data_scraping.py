@@ -2,6 +2,12 @@
 """
 Test script for data scraping functionality
 """
+import sys
+from pathlib import Path
+
+# Add the project root to the Python path
+sys.path.append(str(Path(__file__).parent.parent))
+
 from app.services.data_scraper import DataScraper
 from app.services.data_ingestion import DataIngestionService
 from app.db.database import SessionLocal
